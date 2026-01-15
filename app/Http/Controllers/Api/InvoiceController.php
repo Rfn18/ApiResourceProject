@@ -53,8 +53,12 @@ class InvoiceController extends Controller
 
     public function show($id)
     {
-        $invoice = Invoice::with('items')->findOrfail($id);
+        $invoice = Invoice::with('items')->find($id);
 
-        return ItemResource(true, 'List data invoice id', $invoice);
+        if(!$invoice) {
+            return new ItemResource(false, 'Id tidak ditemukan', $invoice);
+        }
+
+        return new ItemResource(true, 'List data invoice bedasarkan id', $invoice);
     }
 }

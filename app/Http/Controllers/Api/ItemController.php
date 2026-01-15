@@ -36,23 +36,39 @@ class ItemController extends Controller
 
     public function show($id)
     {
-        $items = Item::find($id);
+        $item = Item::find($id);
 
-        return new ItemResource(true, "ist data item bedasarkan id", $items);
+         if (!$item) {
+            return new ItemResource(false, "Item tidak ditemukan", null);
+        }
+
+
+        return new ItemResource(true, "ist data item bedasarkan id", $item);
     }
 
     public function update(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
+
+        if (!$item) {
+            return new ItemResource(false, "Item tidak ditemukan", null);
+        }
+
         $item->update($request->all());
 
-        return response()->json($item);
+        return new ItemResource(true, "Berhasil update data!", $item);
     }
 
     public function destroy($id)
     {
-        Item::destroy($id);
+        $item = Item::find($id);
 
-        return response()->json(null, 204);
+        if (!$item) {
+            return new ItemResource(false, "Item tidak ditemukan", null);
+        }
+
+        $item->delete();
+
+        return new ItemResource(true, "Berhasil hapus item", $id);
     }
 }
